@@ -1,17 +1,24 @@
 defmodule Inmana.Welcomer do
-  # Receber nome e idade do usuário
-  # Se o usuário chamar "banana" e tiver idade "42", ele recebe uma mensagem especial
-  # Se o usuário for maior de idade, ele recebe uma mensagem normal
-  # Se o usuário for menor de idade, retornamos um erro
-  # Tratamento do nome do usuário para entradas erradas, como "BaNaNa", "BaNaNa \n"
+  def welcome(%{"name" => name, "age" => age}) do
+    age = String.to_integer(age)
 
-  def welcome(params) do
-    params["name"]
-    age = params["age"]
+    name
+    |> String.trim()
+    |> String.downcase()
+    |> String.capitalize()
+    # Valor implicito no primeiro argumento
+    |> evaluate(age)
+  end
 
-    name = params["name"] |> String.trim() |> String.downcase() |> String.capitalize()
+  defp evaluate("Banana", 42) do
+    {:ok, "You are very special, Banana"}
+  end
 
-    IO.inspect(name)
-    IO.inspect(age)
+  defp evaluate(name, age) when age >= 18 do
+    {:ok, "Welcome #{name}"}
+  end
+
+  defp evaluate(name, _age) do
+    {:error, "You shall not pass #{name}"}
   end
 end
